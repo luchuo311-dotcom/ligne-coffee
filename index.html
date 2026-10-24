@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一線咖啡 LIGNÉ Coffee — 一條線，從豆到杯</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23F4EFE6'/%3E%3Cpath d='M28 58 Q28 76 50 76 Q72 76 72 58 M32 58 L32 48 Q32 38 42 38 L58 38 Q68 38 68 48 L68 58 M40 28 Q45 23 42 18 M52 28 Q57 23 54 18 M62 28 Q67 23 64 18' stroke='%231C1917' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#F4EFE6;
+  --ink:#1C1917;
+  --coffee:#6F4E37;
+  --coffee-light:#C9B896;
+  --paper:#FBF9F4;
+  --line:#D9D0C2;
+  --serif:Georgia,'Times New Roman','Songti TC','PMingLiU',serif;
+  --sans:-apple-system,'PingFang TC','Microsoft JhengHei','Helvetica Neue',Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.7;
+  font-weight:300;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+/* ===== 导航 ===== */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(244,239,230,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  transition:box-shadow .3s;
+}
+.nav.scrolled{box-shadow:0 2px 20px rgba(28,25,23,.06)}
+.nav-inner{
+  max-width:1200px;margin:0 auto;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:72px;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:38px;height:38px}
+.brand-name{font-family:var(--serif);font-size:1.15rem;font-weight:600;letter-spacing:.05em}
+.brand-sub{font-size:.7rem;color:var(--coffee);letter-spacing:.15em;text-transform:uppercase}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{
+  font-size:.88rem;font-weight:400;position:relative;padding:6px 0;
+  color:var(--ink);transition:color .2s;
+}
+.nav-links a::after{
+  content:'';position:absolute;left:0;bottom:0;width:0;height:1px;
+  background:var(--coffee);transition:width .3s;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--coffee)}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.nav-cta{
+  padding:9px 20px;border:1px solid var(--ink);font-size:.82rem;
+  letter-spacing:.08em;transition:all .25s;
+}
+.nav-cta:hover{background:var(--ink);color:var(--bg)}
+.burger{display:none;flex-direction:column;gap:5px;padding:8px}
+.burger span{width:24px;height:1.5px;background:var(--ink);transition:.3s}
+
+/* ===== 视图切换 ===== */
+.view{display:none;min-height:100vh;padding-top:72px}
+.view.active{display:block;animation:fadeUp .5s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ===== 通用容器 ===== */
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+.section{padding:90px 0}
+.section-label{
+  font-size:.75rem;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--coffee);margin-bottom:16px;
+}
+.section-title{
+  font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.6rem);
+  font-weight:500;line-height:1.3;margin-bottom:20px;
+}
+.section-lead{font-size:1.05rem;color:#555;max-width:620px;margin-bottom:40px}
+
+/* ===== 滚动揭示 ===== */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ===== HERO (首页) ===== */
+.hero{
+  min-height:calc(100vh - 72px);
+  display:grid;grid-template-columns:1.1fr 1fr;
+  align-items:center;gap:60px;padding:40px 24px;
+  max-width:1280px;margin:0 auto;
+}
+.hero-text h1{
+  font-family:var(--serif);
+  font-size:clamp(2.4rem,5.5vw,4rem);
+  font-weight:500;line-height:1.2;letter-spacing:-.01em;
+  margin-bottom:24px;
+}
+.hero-text h1 em{font-style:normal;color:var(--coffee);position:relative}
+.hero-text h1 em::after{
+  content:'';position:absolute;left:0;bottom:4px;width:100%;height:2px;
+  background:var(--coffee-light);z-index:-1;
+}
+.hero-text p{font-size:1.05rem;color:#555;max-width:440px;margin-bottom:36px}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap}
+.btn{
+  display:inline-block;padding:14px 32px;font-size:.9rem;letter-spacing:.05em;
+  transition:all .25s;cursor:pointer;
+}
+.btn-primary{background:var(--ink);color:var(--bg)}
+.btn-primary:hover{background:var(--coffee)}
+.btn-outline{border:1px solid var(--ink)}
+.btn-outline:hover{background:var(--ink);color:var(--bg)}
+.hero-img{position:relative}
+.hero-img img{
+  width:100%;height:520px;object-fit:cover;
+  filter:sepia(.15) saturate(.9);
+}
+.hero-img::before{
+  content:'';position:absolute;top:-20px;left:-20px;right:20px;bottom:20px;
+  border:1px solid var(--coffee-light);z-index:-1;
+}
+.hero-stats{
+  display:flex;gap:48px;margin-top:56px;padding-top:32px;
+  border-top:1px solid var(--line);
+}
+.stat-num{font-family:var(--serif);font-size:1.8rem;font-weight:500;color:var(--coffee)}
+.stat-label{font-size:.8rem;color:#777;margin-top:4px}
+
+/* 首页理念区 */
+.philosophy{background:var(--paper)}
+.philosophy-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:40px;
+}
+.ph-card{padding:32px;border-top:2px solid var(--ink)}
+.ph-card h3{font-family:var(--serif);font-size:1.2rem;font-weight:500;margin-bottom:12px}
+.ph-card p{font-size:.92rem;color:#666}
+
+/* 首页精选 */
+.featured-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.featured-img img{width:100%;height:420px;object-fit:cover;filter:sepia(.12)}
+.featured-text h2{font-family:var(--serif);font-size:2rem;font-weight:500;margin-bottom:20px;line-height:1.3}
+.featured-text p{color:#555;margin-bottom:16px}
+
+/* ===== ABOUT ===== */
+.about-hero{padding:80px 0 60px}
+.about-hero h1{font-family:var(--serif);font-size:clamp(2.2rem,5vw,3.4rem);font-weight:500;line-height:1.25;margin-bottom:24px}
+.about-hero .lead{font-size:1.15rem;color:#555;max-width:640px}
+.about-img{margin:40px 0}
+.about-img img{width:100%;height:420px;object-fit:cover;filter:sepia(.1)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:60px;padding:60px 0}
+.two-col h3{font-family:var(--serif);font-size:1.4rem;font-weight:500;margin-bottom:16px}
+.two-col p{color:#555;margin-bottom:14px}
+
+/* 时间线 */
+.timeline{padding:40px 0}
+.timeline-item{
+  display:grid;grid-template-columns:120px 40px 1fr;gap:0;
+  padding:24px 0;border-bottom:1px solid var(--line);
+}
+.timeline-year{font-family:var(--serif);font-size:1.1rem;color:var(--coffee);font-weight:500}
+.timeline-dot{position:relative}
+.timeline-dot::before{
+  content:'';position:absolute;left:50%;top:8px;transform:translateX(-50%);
+  width:8px;height:8px;background:var(--coffee);border-radius:50%;
+}
+.timeline-dot::after{
+  content:'';position:absolute;left:50%;top:20px;transform:translateX(-50%);
+  width:1px;bottom:-24px;background:var(--line);
+}
+.timeline-item:last-child .timeline-dot::after{display:none}
+.timeline-content h4{font-weight:500;margin-bottom:4px;font-size:1.05rem}
+.timeline-content p{font-size:.9rem;color:#666}
+
+/* ===== MENU ===== */
+.menu-filters{display:flex;gap:8px;margin:32px 0 40px;flex-wrap:wrap}
+.filter-btn{
+  padding:10px 22px;border:1px solid var(--line);font-size:.88rem;
+  background:transparent;transition:all .25s;color:#555;
+}
+.filter-btn:hover{border-color:var(--ink);color:var(--ink)}
+.filter-btn.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
+.menu-item{
+  background:var(--paper);padding:28px;
+  border:1px solid var(--line);transition:transform .3s,box-shadow .3s;
+}
+.menu-item:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(28,25,23,.06)}
+.menu-item-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.menu-item h3{font-family:var(--serif);font-size:1.2rem;font-weight:500}
+.menu-price{font-family:var(--serif);color:var(--coffee);font-size:1.05rem}
+.menu-desc{font-size:.9rem;color:#666;margin-bottom:14px}
+.menu-tags{display:flex;gap:8px;flex-wrap:wrap}
+.menu-tag{font-size:.72rem;padding:3px 10px;border:1px solid var(--coffee-light);color:var(--coffee);letter-spacing:.05em}
+
+/* ===== ROASTERY ===== */
+.roast-hero{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;padding:60px 0}
+.roast-hero img{width:100%;height:400px;object-fit:cover;filter:sepia(.15)}
+.origin-list{margin-top:40px}
+.origin-item{
+  display:grid;grid-template-columns:80px 1fr auto;gap:20px;align-items:center;
+  padding:20px 0;border-bottom:1px solid var(--line);
+}
+.origin-flag{font-family:var(--serif);font-size:1.5rem;color:var(--coffee-light)}
+.origin-name{font-weight:500}
+-origin-note{font-size:.85rem;color:#777}
+.origin-level{font-size:.8rem;color:var(--coffee)}
+
+/* ===== LOCATIONS ===== */
+.loc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:40px}
+.loc-card{background:var(--paper);border:1px solid var(--line);overflow:hidden}
+.loc-card img{width:100%;height:200px;object-fit:cover;filter:sepia(.1)}
+.loc-body{padding:24px}
+.loc-body h3{font-family:var(--serif);font-size:1.15rem;font-weight:500;margin-bottom:8px}
+.loc-body p{font-size:.88rem;color:#666;margin-bottom:4px}
+.loc-hours{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:.82rem;color:#888}
+
+/* ===== WORKSHOP ===== */
+.ws-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:32px;margin-top:40px}
+.ws-card{
+  background:var(--paper);border:1px solid var(--line);overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.ws-card img{width:100%;height:220px;object-fit:cover;filter:sepia(.1)}
+.ws-body{padding:28px;flex:1;display:flex;flex-direction:column}
+.ws-level{font-size:.72rem;letter-spacing:.15em;color:var(--coffee);text-transform:uppercase;margin-bottom:8px}
+.ws-body h3{font-family:var(--serif);font-size:1.25rem;font-weight:500;margin-bottom:10px}
+.ws-body p{font-size:.9rem;color:#666;margin-bottom:16px;flex:1}
+.ws-meta{display:flex;justify-content:space-between;font-size:.85rem;color:#888;padding-top:14px;border-top:1px solid var(--line)}
+
+/* ===== JOURNAL ===== */
+.journal-video{margin:40px 0}
+.journal-video video{width:100%;display:block;background:#000}
+.journal-video-caption{font-size:.85rem;color:#777;margin-top:10px}
+.article-list{margin-top:40px}
+.article-item{
+  display:grid;grid-template-columns:200px 1fr;gap:28px;
+  padding:28px 0;border-bottom:1px solid var(--line);align-items:center;
+}
+.article-item img{width:200px;height:130px;object-fit:cover;filter:sepia(.1)}
+.article-item h3{font-family:var(--serif);font-size:1.2rem;font-weight:500;margin-bottom:6px}
+.article-item p{font-size:.9rem;color:#666}
+.article-date{font-size:.78rem;color:var(--coffee);margin-top:8px;letter-spacing:.1em}
+
+/* ===== CONTACT ===== */
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:60px;padding:40px 0}
+.contact-info h3{font-family:var(--serif);font-size:1.3rem;font-weight:500;margin-bottom:20px}
+.info-row{padding:14px 0;border-bottom:1px solid var(--line)}
+.info-row .label{font-size:.75rem;color:#888;letter-spacing:.1em;text-transform:uppercase}
+.info-row .value{font-size:1rem;margin-top:2px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:.85rem;margin-bottom:6px;font-weight:500}
+.form-group input,.form-group textarea,.form-group select{
+  width:100%;padding:12px 14px;border:1px solid var(--line);
+  background:var(--paper);font-family:inherit;font-size:16px;color:var(--ink);
+  transition:border-color .2s;
+}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{
+  outline:none;border-color:var(--coffee);
+}
+.form-group textarea{min-height:120px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-msg{
+  margin-top:16px;padding:14px;background:#E8E0D0;color:var(--coffee);
+  font-size:.9rem;display:none;
+}
+.form-msg.show{display:block}
+
+/* ===== FOOTER ===== */
+footer{
+  background:var(--ink);color:#B8AD9C;padding:60px 24px 30px;margin-top:40px;
+}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;
+}
+.footer-brand img{width:48px;height:48px;background:var(--paper);border-radius:50%;padding:6px;margin-bottom:16px}
+.footer-brand h4{font-family:var(--serif);color:var(--bg);font-size:1.1rem;margin-bottom:8px;font-weight:500}
+.footer-brand p{font-size:.85rem;line-height:1.7}
+.footer-col h5{color:var(--bg);font-size:.85rem;margin-bottom:14px;font-weight:500;letter-spacing:.05em}
+.footer-col a{display:block;font-size:.85rem;padding:4px 0;transition:color .2s}
+.footer-col a:hover{color:var(--bg)}
+.footer-bottom{
+  padding-top:24px;border-top:1px solid #3A3530;
+  display:flex;justify-content:space-between;font-size:.78rem;flex-wrap:wrap;gap:12px;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width:900px){
+  .nav-links{
+    position:fixed;top:72px;left:0;right:0;
+    background:var(--bg);flex-direction:column;padding:24px;
+    gap:16px;border-bottom:1px solid var(--line);
+    transform:translateY(-120%);transition:transform .3s;
+  }
+  .nav-links.open{transform:translateY(0)}
+  .burger{display:flex}
+  .hero{grid-template-columns:1fr;gap:32px;padding-top:20px}
+  .hero-img img{height:320px}
+  .hero-stats{gap:24px;flex-wrap:wrap}
+  .philosophy-grid{grid-template-columns:1fr;gap:20px}
+  .featured-grid,.roast-hero,.two-col,.contact-grid{grid-template-columns:1fr;gap:32px}
+  .menu-grid,.ws-grid{grid-template-columns:1fr}
+  .loc-grid{grid-template-columns:1fr}
+  .article-item{grid-template-columns:1fr;gap:16px}
+  .article-item img{width:100%;height:180px}
+  .footer-top{grid-template-columns:1fr 1fr;gap:24px}
+  .section{padding:60px 0}
+}
+@media (max-width:560px){
+  .form-row{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr}
+  .timeline-item{grid-template-columns:80px 28px 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 导航 ===== -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#home" class="brand" data-nav="home">
+      <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/NM8Tb1IUCox3YRxpNzHcOHfbnob" alt="一線咖啡 Logo">
+      <div>
+        <div class="brand-name">一線咖啡</div>
+        <div class="brand-sub">Ligné Coffee</div>
+      </div>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#home" data-nav="home" class="active">首頁</a>
+      <a href="#about" data-nav="about">關於</a>
+      <a href="#menu" data-nav="menu">咖啡單</a>
+      <a href="#roastery" data-nav="roastery">烘焙工坊</a>
+      <a href="#locations" data-nav="locations">門店</a>
+      <a href="#workshop" data-nav="workshop">咖啡課堂</a>
+      <a href="#journal" data-nav="journal">日志</a>
+      <a href="#contact" data-nav="contact" class="nav-cta">聯絡我們</a>
+    </div>
+    <button class="burger" id="burger" aria-label="menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== 视图：首页 ===== -->
+<section class="view active" id="view-home">
+  <div class="hero">
+    <div class="hero-text">
+      <h1>一條線，<br>從<em>豆</em>到<em>杯</em>。</h1>
+      <p>一線咖啡成立於香港，專注精品手沖咖啡。我們相信，一杯好咖啡不需要繁文縟節——從產地到沖煮，本就是一條流暢的線。</p>
+      <div class="hero-actions">
+        <a href="#menu" class="btn btn-primary" data-nav="menu">瀏覽咖啡單</a>
+        <a href="#about" class="btn btn-outline" data-nav="about">品牌故事</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-num">12+</div><div class="stat-label">產地單品豆</div></div>
+        <div><div class="stat-num">3</div><div class="stat-label">香港門店</div></div>
+        <div><div class="stat-num">2018</div><div class="stat-label">創立年份</div></div>
+      </div>
+    </div>
+    <div class="hero-img">
+      <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/CZUobgiphom1HbxlSEicVWrQnEf" alt="手沖咖啡">
+    </div>
+  </div>
+
+  <div class="section philosophy">
+    <div class="container">
+      <div class="section-label reveal">Our Philosophy</div>
+      <h2 class="section-title reveal">三件事，我們堅持</h2>
+      <div class="philosophy-grid">
+        <div class="ph-card reveal">
+          <h3>直線採購</h3>
+          <p>直接與產地農民合作，跳過中間商。每一隻豆子都可追溯到具體產區、處理法與批次。</p>
+        </div>
+        <div class="ph-card reveal">
+          <h3>淺烘焙</h3>
+          <p>我們偏好淺至中烘焙，保留豆子本身的風味層次——花香、果酸、堅果，而不是統一的焦苦味。</p>
+        </div>
+        <div class="ph-card reveal">
+          <h3>慢下來</h3>
+          <p>一杯手沖需要四分鐘。我們不趕時間，也希望你在這裡，願意慢下來。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="featured-grid">
+        <div class="featured-img reveal">
+          <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/HMImbp9sToHpNuxfwkDcHRNsnT6" alt="咖啡豆">
+        </div>
+        <div class="featured-text reveal">
+          <div class="section-label">This Season</div>
+          <h2>本季推薦：<br>衣索比亞 耶加雪菲</h2>
+          <p>來自西達莫產區的水洗批次，明亮的柑橘酸質，尾韻帶有茉莉花香與蜂蜜甜感。</p>
+          <p>無論手沖還是黑咖啡，都適合喜歡清爽風味的你。</p>
+          <a href="#menu" class="btn btn-outline" data-nav="menu">查看完整菜單 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：关于 ===== -->
+<section class="view" id="view-about">
+  <div class="container about-hero">
+    <div class="section-label reveal">About Us</div>
+    <h1 class="reveal">我們相信，<br>好咖啡本應簡單。</h1>
+    <p class="lead reveal">一線咖啡始於 2018 年香港旺角的一間小店。創辦人阿澤原本是設計師，因為沉迷手沖而放棄了正職，開了這間只有八個座位的咖啡室。</p>
+  </div>
+  <div class="container about-img reveal">
+    <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/WpKAbaziAoio7qxBDGRcwF2Tnad" alt="咖啡室內景">
+  </div>
+  <div class="container two-col">
+    <div class="reveal">
+      <h3>從一杯咖啡開始</h3>
+      <p>起初，我們只賣一種咖啡豆、一種沖法。客人笑我們死板，但正是這種堅持，讓我們把每個細節反覆打磨——水溫、水粉比、注水節奏。</p>
+      <p>幾年下來，我們從一間小店變成了有烘焙工坊的團隊，開始自己烘焙、自己進口豆子。</p>
+    </div>
+    <div class="reveal">
+      <h3>線，是我們的美學</h3>
+      <p>品牌 Logo 是一條不間斷的線——它是咖啡的蒸氣、是水流的軌跡、是從產地到杯中那條看不見的路。</p>
+      <p>我們把這條線放進店內空間、杯具設計，甚至菜單的排版裡。簡單，但講究。</p>
+    </div>
+  </div>
+  <div class="container">
+    <div class="section-label reveal">Milestones</div>
+    <h2 class="section-title reveal">走過的路</h2>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-year">2018</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>旺角開業</h4>
+          <p>第一間店，八個座位，一隻豆子。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year">2020</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>成立烘焙工坊</h4>
+          <p>購入第一台 5kg 烘焙機，開始自行烘焙。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year">2022</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>第二間店 — 中環</h4>
+          <p>搬進商業區，服務日常需要一杯好咖啡的人。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year">2024</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>咖啡課堂啟動</h4>
+          <p>把我們的沖煮方法，教給更多人。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：咖啡单 ===== -->
+<section class="view" id="view-menu">
+  <div class="container" style="padding-top:60px">
+    <div class="section-label reveal">Menu</div>
+    <h1 class="section-title reveal">咖啡單</h1>
+    <p class="section-lead reveal">所有咖啡皆可選咖啡豆，我們也提供無咖啡因選項。價格以港幣計。</p>
+
+    <div class="menu-filters reveal">
+      <button class="filter-btn active" data-filter="all">全部</button>
+      <button class="filter-btn" data-filter="pour">手沖咖啡</button>
+      <button class="filter-btn" data-filter="espresso">意式咖啡</button>
+      <button class="filter-btn" data-filter="bean">咖啡豆</button>
+    </div>
+
+    <div class="menu-grid" id="menuGrid">
+      <div class="menu-item reveal" data-cat="pour">
+        <div class="menu-item-head"><h3>耶加雪菲 水洗</h3><span class="menu-price">$58</span></div>
+        <p class="menu-desc">柑橘、茉莉、蜂蜜。明亮清爽，入門首選。</p>
+        <div class="menu-tags"><span class="menu-tag">淺烘焙</span><span class="menu-tag">衣索比亞</span></div>
+      </div>
+      <div class="menu-item reveal" data-cat="pour">
+        <div class="menu-item-head"><h3>慧蘭 蜜處理</h3><span class="menu-price">$62</span></div>
+        <p class="menu-desc">焦糖、蘋果、溫和堅果。平衡順口。</p>
+        <div class="menu-tags"><span class="menu-tag">中淺烘焙</span><span class="menu-tag">宏都拉斯</span></div>
+      </div>
+      <div class="menu-item reveal" data-cat="pour">
+        <div class="menu-item-head"><h3>藝伎 日曬</h3><span class="menu-price">$98</span></div>
+        <p class="menu-desc">花果香爆發，白葡萄、伯爵茶。季節限定。</p>
+        <div class="menu-tags"><span class="menu-tag">淺烘焙</span><span class="menu-tag">巴拿馬</span></div>
+      </div>
+      <div class="menu-item reveal" data-cat="espresso">
+        <div class="menu-item-head"><h3>美式咖啡</h3><span class="menu-price">$42</span></div>
+        <p class="menu-desc">本店綜合豆，可可、烤杏仁、柔順口感。</p>
+        <div class="menu-tags"><span class="menu-tag">中烘焙</span></div>
+      </div>
+      <div class="menu-item reveal" data-cat="espresso">
+        <div class="menu-item-head"><h3>拿鐵</h3><span class="menu-price">$48</span></div>
+        <p class="menu-desc">厚厚奶泡，咖啡與牛奶的經典平衡。</p>
+        <div class="menu-tags"><span class="menu-tag">中烘焙</span></div>
+      </div>
+      <div class="menu-item reveal" data-cat="espresso">
+        <div class="menu-item-head"><h3>澳白 Flat White</h3><span class="menu-price">$50</span></div>
+        <p class="menu-desc">薄奶泡，更高咖啡比例，適合喜歡咖啡味重的你。</p>
+        <div class="menu-tags"><span class="menu-tag">中烘焙</span></div>
+      </div>
+      <div class="menu-item reveal" data-cat="bean">
+        <div class="menu-item-head"><h3>耶加雪菲 豆包</h3><span class="menu-price">$128 / 200g</span></div>
+        <p class="menu-desc">店內同款豆子，新鮮烘焙後三天內寄出。</p>
+        <div class="menu-tags"><span class="menu-tag">淺烘焙</span><span class="menu-tag"> wholebean</span></div>
+      </div>
+      <div class="menu-item reveal" data-cat="bean">
+        <div class="menu-item-head"><h3>店內綜合豆</h3><span class="menu-price">$108 / 200g</span></div>
+        <p class="menu-desc">為意式配方調和，巧克力與堅果基底。</p>
+        <div class="menu-tags"><span class="menu-tag">中烘焙</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：烘焙工坊 ===== -->
+<section class="view" id="view-roastery">
+  <div class="container">
+    <div class="roast-hero">
+      <div class="reveal">
+        <div class="section-label">Roastery</div>
+        <h1 class="section-title">我們的烘焙工坊</h1>
+        <p class="section-lead">位於新蒲崗的工廈裡，一間 800 平方呎的工坊。每週一、三、五烘焙，其餘時間在杯測與調整曲線。</p>
+        <p style="color:#555">我們用一台 5kg 真孔烘焙機，小批量、頻繁出爐，確保你喝到的每一包豆子都在最佳賞味期內。</p>
+      </div>
+      <img class="reveal" src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/VrZUbb22FoUSRKx4Y9scDQomnIh" alt="咖啡烘焙機">
+    </div>
+
+    <div class="section" style="padding-top:20px">
+      <div class="section-label reveal">Origins</div>
+      <h2 class="section-title reveal">本季產地</h2>
+      <div class="origin-list">
+        <div class="origin-item reveal">
+          <div class="origin-flag">ET</div>
+          <div><div class="origin-name">衣索比亞 · 耶加雪菲</div><div class="origin-note">水洗處理，柑橘與茉莉</div></div>
+          <div class="origin-level">淺烘焙</div>
+        </div>
+        <div class="origin-item reveal">
+          <div class="origin-flag">PA</div>
+          <div><div class="origin-name">巴拿馬 · 博克特</div><div class="origin-note">日曬藝伎，花果香</div></div>
+          <div class="origin-level">淺烘焙</div>
+        </div>
+        <div class="origin-item reveal">
+          <div class="origin-flag">HN</div>
+          <div><div class="origin-name">宏都拉斯 · 慧蘭</div><div class="origin-note">蜜處理，焦糖蘋果</div></div>
+          <div class="origin-level">中淺烘焙</div>
+        </div>
+        <div class="origin-item reveal">
+          <div class="origin-flag">CO</div>
+          <div><div class="origin-name">哥倫比亞 · 慧蘭</div><div class="origin-note">水洗，堅果巧克力</div></div>
+          <div class="origin-level">中烘焙</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：门店 ===== -->
+<section class="view" id="view-locations">
+  <div class="container" style="padding-top:60px">
+    <div class="section-label reveal">Locations</div>
+    <h1 class="section-title reveal">三間門店</h1>
+    <p class="section-lead reveal">每間店有不同的氛圍，但同樣的咖啡。</p>
+    <div class="loc-grid">
+      <div class="loc-card reveal">
+        <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/WpKAbaziAoio7qxBDGRcwF2Tnad" alt="旺角總店">
+        <div class="loc-body">
+          <h3>旺角總店</h3>
+          <p>旺角洗衣街 88 號地舖</p>
+          <p>八個座位，本店起點</p>
+          <div class="loc-hours">每日 08:00 – 19:00</div>
+        </div>
+      </div>
+      <div class="loc-card reveal">
+        <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/CZUobgiphom1HbxlSEicVWrQnEf" alt="中環店">
+        <div class="loc-body">
+          <h3>中環店</h3>
+          <p>中環擺花街 12 號 2 樓</p>
+          <p>安靜樓上店，適合工作</p>
+          <div class="loc-hours">週一至六 07:30 – 18:30</div>
+        </div>
+      </div>
+      <div class="loc-card reveal">
+        <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/U2iNbn8ZioPSSCxa7QRc1YDYnsf" alt="新蒲崗工坊店">
+        <div class="loc-body">
+          <h3>新蒲崗工坊店</h3>
+          <p>新蒲崗六合街 20 號</p>
+          <p>參觀烘焙，現場買豆</p>
+          <div class="loc-hours">週三至日 10:00 – 18:00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：咖啡课堂 ===== -->
+<section class="view" id="view-workshop">
+  <div class="container" style="padding-top:60px">
+    <div class="section-label reveal">Workshop</div>
+    <h1 class="section-title reveal">咖啡課堂</h1>
+    <p class="section-lead reveal">從零開始，學會手沖一杯屬於自己的咖啡。每場課程限 6 人，由烘焙師親自帶領。</p>
+    <div class="ws-grid">
+      <div class="ws-card reveal">
+        <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/U2iNbn8ZioPSSCxa7QRc1YDYnsf" alt="入門課">
+        <div class="ws-body">
+          <div class="ws-level">初級</div>
+          <h3>手沖咖啡入門</h3>
+          <p>認識咖啡器具、水溫與水粉比，親手沖出第一杯穩定的手沖。適合完全新手。</p>
+          <div class="ws-meta"><span>2.5 小時</span><span>$480 / 人</span></div>
+        </div>
+      </div>
+      <div class="ws-card reveal">
+        <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/HMImbp9sToHpNuxfwkDcHRNsnT6" alt="進階課">
+        <div class="ws-body">
+          <div class="ws-level">中級</div>
+          <h3>烘焙與產地</h3>
+          <p>走進烘焙工坊，看一隻豆子如何從綠豆變成咖啡豆。帶回家一張自己的烘焙曲線。</p>
+          <div class="ws-meta"><span>3 小時</span><span>$680 / 人</span></div>
+        </div>
+      </div>
+      <div class="ws-card reveal">
+        <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/VrZUbb22FoUSRKx4Y9scDQomnIh" alt="杯測課">
+        <div class="ws-body">
+          <div class="ws-level">專項</div>
+          <h3>杯測與味覺訓練</h3>
+          <p>像咖啡審定師一樣杯測三隻產地豆，學習描述香氣與風味。適合想深入的愛好者。</p>
+          <div class="ws-meta"><span>2 小時</span><span>$580 / 人</span></div>
+        </div>
+      </div>
+      <div class="ws-card reveal">
+        <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/CZUobgiphom1HbxlSEicVWrQnEf" alt="私人包場">
+        <div class="ws-body">
+          <div class="ws-level">包場</div>
+          <h3>團體私人課</h3>
+          <p>為公司、朋友包場訂製。包含器具介紹、共同沖煮與點心搭配。人數 6–12 人。</p>
+          <div class="ws-meta"><span>客製</span><span>報價另議</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：日志 ===== -->
+<section class="view" id="view-journal">
+  <div class="container" style="padding-top:60px">
+    <div class="section-label reveal">Journal</div>
+    <h1 class="section-title reveal">日志</h1>
+    <p class="section-lead reveal">關於咖啡、產地與沖煮的筆記。</p>
+
+    <div class="journal-video reveal">
+      <video controls poster="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/U2iNbn8ZioPSSCxa7QRc1YDYnsf" preload="metadata">
+        <source src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" type="video/mp4">
+        你的瀏覽器不支援影片播放。
+      </video>
+      <div class="journal-video-caption">影片：我們的主理人示範日常手沖過程 — 45 秒</div>
+    </div>
+
+    <div class="article-list">
+      <div class="article-item reveal">
+        <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/HMImbp9sToHpNuxfwkDcHRNsnT6" alt="文章">
+        <div>
+          <h3>如何分辨淺烘焙與深烘焙</h3>
+          <p>從顏色、香氣與口感三個維度，教你看懂豆子包裝上的烘焙標示。</p>
+          <div class="article-date">2026.09.12</div>
+        </div>
+      </div>
+      <div class="article-item reveal">
+        <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/VrZUbb22FoUSRKx4Y9scDQomnIh" alt="文章">
+        <div>
+          <h3>為什麼我們堅持小批量烘焙</h3>
+          <p>大批量烘焙的效率很高，但風味穩定性是另一回事。解釋我們的取捨。</p>
+          <div class="article-date">2026.08.28</div>
+        </div>
+      </div>
+      <div class="article-item reveal">
+        <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/CZUobgiphom1HbxlSEicVWrQnEf" alt="文章">
+        <div>
+          <h3>手沖注水的三個常見錯誤</h3>
+          <p>水流太大、注水斷線、不計時——檢查你家中的手沖是不是也中了。</p>
+          <div class="article-date">2026.07.15</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：联络 ===== -->
+<section class="view" id="view-contact">
+  <div class="container" style="padding-top:60px">
+    <div class="section-label reveal">Contact</div>
+    <h1 class="section-title reveal">聯絡我們</h1>
+    <p class="section-lead reveal">無論是訂購豆子、包場課程，還是只想說声你喜歡我們的咖啡，都歡迎留言。</p>
+
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <h3>分店資料</h3>
+        <div class="info-row">
+          <div class="label">電話</div>
+          <div class="value">+852 2345 6789</div>
+        </div>
+        <div class="info-row">
+          <div class="label">電郵</div>
+          <div class="value">hello@lignecoffee.hk</div>
+        </div>
+        <div class="info-row">
+          <div class="label">辦公時間</div>
+          <div class="value">週一至日 08:00 – 19:00</div>
+        </div>
+        <div class="info-row">
+          <div class="label">工坊地址</div>
+          <div class="value">九龍新蒲崗六合街 20 號 5 樓</div>
+        </div>
+      </div>
+
+      <form class="reveal" id="contactForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">姓名 *</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">電話</label>
+            <input type="tel" id="phone" name="phone">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">電郵 *</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="topic">查詢類型</label>
+          <select id="topic" name="topic">
+            <option value="general">一般查詢</option>
+            <option value="order">豆子訂購</option>
+            <option value="workshop">課程報名</option>
+            <option value="catering">包場 / 到會</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">留言 *</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">送出訊息</button>
+        <div class="form-msg" id="formMsg">感謝你的留言！我們會在一個工作天內回覆你。</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 页脚 ===== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/NM8Tb1IUCox3YRxpNzHcOHfbnob" alt="logo">
+        <h4>一線咖啡 Ligné Coffee</h4>
+        <p>一條線，從豆到杯。<br>香港精品手沖咖啡，始於 2018。</p>
+      </div>
+      <div class="footer-col">
+        <h5>導覽</h5>
+        <a href="#home" data-nav="home">首頁</a>
+        <a href="#about" data-nav="about">關於</a>
+        <a href="#menu" data-nav="menu">咖啡單</a>
+        <a href="#journal" data-nav="journal">日志</a>
+      </div>
+      <div class="footer-col">
+        <h5>探索</h5>
+        <a href="#roastery" data-nav="roastery">烘焙工坊</a>
+        <a href="#workshop" data-nav="workshop">咖啡課堂</a>
+        <a href="#locations" data-nav="locations">門店</a>
+      </div>
+      <div class="footer-col">
+        <h5>聯絡</h5>
+        <a href="#contact" data-nav="contact">查詢表格</a>
+        <a href="mailto:hello@lignecoffee.hk">hello@lignecoffee.hk</a>
+        <a href="tel:+85223456789">+852 2345 6789</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 一線咖啡 Ligné Coffee. 學生習作示範網站。</span>
+      <span>CSE3110 辦公室軟件及網頁設計 — 專題研習</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== 视图路由 =====
+const views = ['home','about','menu','roastery','locations','workshop','journal','contact'];
+function navigate(hash){
+  let target = hash.replace('#','') || 'home';
+  if(!views.includes(target)) target = 'home';
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+target).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a=>{
+    a.classList.toggle('active', a.dataset.nav===target);
+  });
+  window.scrollTo({top:0,behavior:'instant'});
+  // 触发新视图的 reveal
+  setTimeout(()=>observeReveals(),100);
+  // 关闭移动菜单
+  document.getElementById('navLinks').classList.remove('open');
+}
+window.addEventListener('hashchange',()=>navigate(location.hash));
+
+// 所有 data-nav 链接
+document.querySelectorAll('[data-nav]').forEach(el=>{
+  el.addEventListener('click',e=>{
+    // 让 hashchange 处理
+  });
+});
+
+// ===== 汉堡菜单 =====
+document.getElementById('burger').addEventListener('click',()=>{
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// ===== 导航滚动阴影 =====
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY>20);
+});
+
+// ===== 滚动揭示 =====
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      en.target.classList.add('in');
+      io.unobserve(en.target);
+    }
+  });
+},{threshold:0.12});
+function observeReveals(){
+  document.querySelectorAll('.view.active .reveal:not(.in)').forEach(el=>io.observe(el));
+}
+
+// ===== 菜单筛选 =====
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    document.querySelectorAll('#menuGrid .menu-item').forEach(item=>{
+      const show = f==='all' || item.dataset.cat===f;
+      item.style.display = show ? '' : 'none';
+    });
+  });
+});
+
+// ===== 表单提交 =====
+document.getElementById('contactForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const msg = document.getElementById('message').value.trim();
+  if(!name || !email || !msg){
+    alert('請填寫姓名、電郵與留言。');
+    return;
+  }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    alert('請輸入有效的電郵地址。');
+    return;
+  }
+  const box = document.getElementById('formMsg');
+  box.classList.add('show');
+  this.reset();
+  setTimeout(()=>box.classList.remove('show'),5000);
+});
+
+// ===== 初始化 =====
+navigate(location.hash || '#home');
+observeReveals();
+</script>
+</body>
+</html>
