@@ -149,11 +149,28 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .featured-text p{color:#555;margin-bottom:16px}
 
 /* ===== ABOUT ===== */
-.about-hero{padding:80px 0 60px}
+.about-hero{padding:80px 0 60px; text-align:left;} /* 確保文字靠左 */
 .about-hero h1{font-family:var(--serif);font-size:clamp(2.2rem,5vw,3.4rem);font-weight:500;line-height:1.25;margin-bottom:24px}
-.about-hero .lead{font-size:1.15rem;color:#555;max-width:640px}
-.about-img{margin:40px 0}
-.about-img img{width:100%;height:420px;object-fit:cover;filter:sepia(.1)}
+/* 修改後的寫法 */
+.about-hero .lead {
+  font-size: 1.15rem;
+  color: #555;
+  max-width: 100% !important; /* 取消 640px 的寬度限制，讓文字能向右伸展 */
+  white-space: nowrap;        /* 強制文字不換行，直接單行鋪過去 */
+}
+
+/* 圖片容器與圖片居中 */
+.about-img{
+  margin:40px auto;
+  text-align:center;
+}
+.about-img img {
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+  filter: sepia(.1);
+}
+
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:60px;padding:60px 0}
 .two-col h3{font-family:var(--serif);font-size:1.4rem;font-weight:500;margin-bottom:16px}
 .two-col p{color:#555;margin-bottom:14px}
@@ -664,12 +681,11 @@ footer{
     <p class="section-lead reveal">關於咖啡、產地與沖煮的筆記。</p>
 
     <div class="journal-video reveal">
-      <video controls poster="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/U2iNbn8ZioPSSCxa7QRc1YDYnsf" preload="metadata">
-        <source src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" type="video/mp4">
-        你的瀏覽器不支援影片播放。
-      </video>
-      <div class="journal-video-caption">影片：我們的主理人示範日常手沖過程 — 45 秒</div>
-    </div>
+  <video controls autoplay loop muted playsinline poster="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/U2iNbn8ZioPSSCxa7QRc1YDYnsf" preload="metadata">
+    <source src="coffee-demo.mp4" type="video/mp4">
+  </video>
+  <div class="journal-video-caption">影片：我們的主理人示範日常手沖過程 — 45 秒</div>
+</div>
 
     <div class="article-list">
       <div class="article-item reveal">
@@ -712,7 +728,7 @@ footer{
         <h3>分店資料</h3>
         <div class="info-row">
           <div class="label">電話</div>
-          <div class="value">+852 2345 6789</div>
+          <div class="value">+852 xxxx xxxx</div>
         </div>
         <div class="info-row">
           <div class="label">電郵</div>
